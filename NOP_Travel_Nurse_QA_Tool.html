@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Nurse Q&A | No Ordinary Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:         #2cd4bb;
+    --teal-dark:    #278788;
+    --teal-deep:    #0c6982;
+    --teal-pale:    #dff1f2;
+    --teal-soft:    #aff4f2;
+    --orange:       #ffac47;
+    --white:        #ffffff;
+    --off-white:    #f2fafa;
+    --border:       #c8e8e8;
+    --text-dark:    #0c3d42;
+    --text-body:    #1a4f54;
+    --text-muted:   #5da09e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--off-white);
+    color: var(--text-body);
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: var(--teal);
+    position: relative;
+    overflow: hidden;
+    padding: 52px 24px 72px;
+    text-align: center;
+  }
+  .hero-dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute; top: -60px; right: -60px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero-glow-b {
+    position: absolute; bottom: -80px; left: -40px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(12,105,130,0.3) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero-wave {
+    position: absolute; bottom: -1px; left: 0; right: 0;
+    height: 44px;
+    background: var(--off-white);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .nop-badge {
+    position: relative;
+    display: inline-block;
+    background: var(--teal-deep);
+    color: white;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 6px 18px; border-radius: 50px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    position: relative;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(50px, 10vw, 96px);
+    color: var(--white);
+    line-height: 0.92;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+  .hero h1 .accent { color: var(--teal-deep); }
+  .hero-sub {
+    position: relative;
+    color: rgba(255,255,255,0.88);
+    font-size: 16px; font-weight: 700;
+    max-width: 480px; margin: 0 auto 34px;
+    line-height: 1.65;
+  }
+  .hero-sub strong { color: var(--white); font-weight: 900; }
+
+  .search-outer { position: relative; max-width: 620px; margin: 0 auto; }
+  .search-ring {
+    position: absolute; inset: -3px; border-radius: 60px;
+    background: linear-gradient(135deg, var(--teal-deep), var(--orange));
+    opacity: 0; transition: opacity 0.25s; pointer-events: none;
+  }
+  .search-outer:focus-within .search-ring { opacity: 1; }
+  .search-inner {
+    position: relative; background: white; border-radius: 56px;
+    display: flex; align-items: center; overflow: hidden;
+    box-shadow: 0 14px 44px rgba(12,60,66,0.2);
+  }
+  .search-inner input {
+    flex: 1; border: none; outline: none;
+    padding: 18px 16px 18px 26px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--text-dark); background: transparent;
+  }
+  .search-inner input::placeholder { color: #9dd4d4; font-weight: 600; }
+  .search-btn {
+    margin: 5px; flex-shrink: 0;
+    width: 52px; height: 52px;
+    background: var(--orange);
+    border: none; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: filter 0.2s, transform 0.15s;
+    box-shadow: 0 4px 14px rgba(255,172,71,0.4);
+  }
+  .search-btn:hover { filter: brightness(1.08); transform: scale(1.07); }
+  .search-btn svg { width: 19px; height: 19px; }
+
+  .search-hint {
+    position: relative; margin-top: 14px;
+    display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .hint-pill {
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.92);
+    font-size: 12px; font-weight: 700;
+    padding: 6px 14px; border-radius: 50px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .hint-pill:hover { background: var(--teal-deep); border-color: var(--teal-deep); color: white; }
+
+  .main { max-width: 1080px; margin: 0 auto; padding: 44px 20px 80px; }
+
+  .answer-panel {
+    display: none;
+    background: white; border-radius: 22px; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(12,60,66,0.1);
+    margin-bottom: 44px;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    border: 2px solid var(--teal-pale);
+  }
+  @keyframes popIn {
+    from { opacity:0; transform:scale(0.97) translateY(-10px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+  .answer-panel.visible { display: block; }
+
+  .answer-top-bar {
+    background: var(--teal-dark);
+    padding: 22px 30px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .answer-icon {
+    width: 42px; height: 42px; flex-shrink: 0;
+    background: var(--orange); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; letter-spacing: 1px;
+    color: var(--text-dark); margin-top: 1px;
+  }
+  .answer-meta { flex: 1; }
+  .answer-label-top {
+    font-size: 10px; font-weight: 900;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--teal-soft); margin-bottom: 7px;
+  }
+  .answer-question-text { font-size: 19px; font-weight: 900; color: white; line-height: 1.3; }
+
+  .answer-body { padding: 26px 30px; }
+  .answer-text {
+    font-size: 15px; font-weight: 600;
+    line-height: 1.8; color: var(--text-body); margin-bottom: 22px;
+  }
+  .answer-text.loading { color: var(--text-muted); font-style: italic; }
+  .loading-row { display: flex; align-items: center; gap: 10px; }
+  .spinner {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border: 2.5px solid var(--teal-pale);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .resource-links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .resource-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px; border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800; text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .resource-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.13); }
+  .resource-btn.web { background: var(--teal-dark); color: white; }
+  .resource-btn.yt  { background: #FF0000; color: white; }
+  .resource-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .related-block { border-top: 2px dashed var(--border); padding-top: 18px; margin-bottom: 4px; }
+  .related-label {
+    font-size: 10px; font-weight: 900;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 10px;
+  }
+  .related-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .related-pill {
+    background: var(--teal-pale); border: 2px solid var(--border);
+    border-radius: 50px; padding: 7px 15px;
+    font-size: 12px; font-weight: 700; color: var(--teal-dark);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .related-pill:hover { background: var(--teal); border-color: var(--teal); color: white; transform: translateY(-1px); }
+
+  .cta-strip {
+    background: var(--teal);
+    padding: 22px 30px;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .cta-words { color: white; }
+  .cta-words strong { display: block; font-size: 16px; font-weight: 900; }
+  .cta-words span { font-size: 12px; font-weight: 600; opacity: 0.88; }
+  .cta-link {
+    background: var(--orange); color: var(--text-dark);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 900;
+    padding: 12px 26px; border-radius: 50px;
+    text-decoration: none; white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transition: filter 0.15s, transform 0.15s;
+  }
+  .cta-link:hover { filter: brightness(1.08); transform: translateY(-2px); }
+
+  .browse-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .browse-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 1.5px; color: var(--teal-dark); line-height: 1; }
+  .browse-title span { color: var(--orange); }
+  .browse-count { background: var(--teal-pale); color: var(--teal-dark); font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 50px; border: 2px solid var(--border); }
+
+  .cat-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .cat-tab {
+    padding: 9px 18px; border-radius: 50px;
+    border: 2px solid var(--border); background: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800; color: var(--teal-dark);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .cat-tab:hover { border-color: var(--teal); background: var(--teal-pale); transform: translateY(-1px); }
+  .cat-tab.active { background: var(--teal); border-color: var(--teal); color: white; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(44,212,187,0.35); }
+
+  .q-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+  .q-card {
+    background: white; border-radius: 14px; border: 2px solid var(--border);
+    padding: 15px 18px; cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: flex-start; gap: 11px;
+  }
+  .q-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(44,212,187,0.18); }
+  .q-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 4px; transition: background 0.15s, transform 0.15s; }
+  .q-card:hover .q-dot { background: var(--orange); transform: scale(1.4); }
+  .q-text { font-size: 13px; font-weight: 700; line-height: 1.45; color: var(--text-dark); }
+
+  .foot { text-align: center; margin-top: 56px; }
+  .foot p { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .foot a { color: var(--teal-dark); font-weight: 800; text-decoration: none; }
+  .foot a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 36px 16px 56px; }
+    .main { padding: 28px 14px 60px; }
+    .answer-top-bar, .answer-body, .cta-strip { padding-left: 18px; padding-right: 18px; }
+    .q-grid { grid-template-columns: 1fr; }
+    .cta-strip { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-b"></div>
+  <div class="nop-badge">No Ordinary Path</div>
+  <h1>Got Travel Nurse<br><span class="accent">Questions?</span></h1>
+  <p class="hero-sub">Ask anything and get <strong>real answers</strong> &mdash; plus links directly to Kristin&apos;s articles and videos.</p>
+  <div class="search-outer">
+    <div class="search-ring"></div>
+    <div class="search-inner">
+      <input type="text" id="searchInput" placeholder="e.g. How does travel nurse pay work?" autocomplete="off" />
+      <button class="search-btn" id="searchBtn" aria-label="Ask">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="search-hint">
+    <span class="hint-pill" onclick="quickAsk('How does travel nurse pay work?')">How does pay work?</span>
+    <span class="hint-pill" onclick="quickAsk('What is a tax home?')">What is a tax home?</span>
+    <span class="hint-pill" onclick="quickAsk('Can I travel with my family?')">Travel with family?</span>
+    <span class="hint-pill" onclick="quickAsk('What is a compact license?')">Compact license?</span>
+  </div>
+  <div class="hero-wave"></div>
+</div>
+
+<div class="main">
+  <div class="answer-panel" id="answerPanel">
+    <div class="answer-top-bar">
+      <div class="answer-icon">NOP</div>
+      <div class="answer-meta">
+        <div class="answer-label-top">Answer from No Ordinary Path</div>
+        <div class="answer-question-text" id="answerQuestion"></div>
+      </div>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text" id="answerText"></div>
+      <div class="resource-links" id="resourceLinks"></div>
+      <div class="related-block" id="relatedBlock" style="display:none">
+        <div class="related-label">You might also wonder...</div>
+        <div class="related-pills" id="relatedPills"></div>
+      </div>
+    </div>
+    <div class="cta-strip">
+      <div class="cta-words">
+        <strong>Ready to find your next assignment?</strong>
+        <span>Kristin places travel nurses nationwide with Atlas MedStaff.</span>
+      </div>
+      <a class="cta-link" href="https://www.noordinarypath.com/travelnursejobs" target="_blank">Work With Kristin &rarr;</a>
+    </div>
+  </div>
+
+  <div class="browse-header">
+    <div class="browse-title">Browse by <span>Topic</span></div>
+    <div class="browse-count" id="qCount">228 Questions</div>
+  </div>
+  <div class="cat-tabs" id="catTabs"></div>
+  <div class="q-grid" id="qGrid"></div>
+
+  <div class="foot">
+    <p>Content by <a href="https://www.noordinarypath.com" target="_blank">No Ordinary Path</a> &middot; Built for travel nurses everywhere</p>
+  </div>
+</div>
+
+<script>
+(function() {
+  var QA_DATA = JSON.parse('{"Getting Started":[{"q":"What is travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/EP7VDLQJWk8","keywords":"travel nursing basics, definition"},{"q":"How does travel nursing work?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/EP7VDLQJWk8","keywords":"process, steps, how it works"},{"q":"How long are travel nurse assignments?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"assignment length, duration"},{"q":"How much experience do I need to become a travel nurse?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=j1NOXePWb7c","keywords":"experience requirements, eligibility"},{"q":"Do I need previous travel experience to get hired?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=j1NOXePWb7c","keywords":"first time traveler, experience"},{"q":"How do I get started as a travel nurse?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://www.youtube.com/watch?v=mbaVGU1QlFI","keywords":"getting started, steps"},{"q":"Can I choose where I go?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"choose location, flexibility"},{"q":"Can I take time off between assignments?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"time off, breaks"},{"q":"Can I travel with a friend or partner?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/wfYNTTLSWYY","keywords":"travel together, partner"},{"q":"Can I travel with my family or kids?","web":"https://www.noordinarypath.com/post/traveling-with-a-family","yt":"https://www.youtube.com/watch?v=hNno1L3jXSk","keywords":"family travel, kids"},{"q":"Can I bring pets on assignment?","web":"https://www.noordinarypath.com/post/traveling-in-an-rv","yt":"https://youtu.be/O7NOBnaV-us","keywords":"pets, pet housing"},{"q":"What are the biggest benefits of travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"pros, benefits"},{"q":"What are the downsides of travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ssud95HhnMc","keywords":"cons, drawbacks"},{"q":"Is travel nursing worth it?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=yqMdrYoJWAs","keywords":"worth it, lifestyle"},{"q":"What specialties can travel?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/xRKbH3TeytY","keywords":"specialties, demand"},{"q":"How competitive is travel nursing right now?","web":"https://www.noordinarypath.com/post/recruiter-ai","yt":"https://www.youtube.com/watch?v=5N1lMAl_2nY","keywords":"market, competition"},{"q":"What makes a strong travel nurse candidate?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/mmkuh-g4TyY","keywords":"strong candidate, profile"}],"Pay & Money":[{"q":"How does travel nurse pay work?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"pay structure, taxable, stipends"},{"q":"What is a weekly gross pay package?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"weekly gross, total pay"},{"q":"Why is my hourly rate so low compared to my total pay?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"low hourly, stipend mix"},{"q":"What are stipends?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=WWzkWWm7uLs","keywords":"stipends definition"},{"q":"Where do stipend rates come from?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=WWzkWWm7uLs","keywords":"GSA rates, per diem"},{"q":"How do I qualify for tax-free stipends?","web":"https://www.noordinarypath.com/post/how-to-get-mail","yt":"https://www.youtube.com/watch?v=5rfrPW71fhA","keywords":"eligibility, tax home"},{"q":"What is a tax home?","web":"https://www.noordinarypath.com/post/how-to-get-mail","yt":"https://www.youtube.com/watch?v=j2IMn8mWTSo","keywords":"tax home definition"},{"q":"What disqualifies me from receiving tax-free stipends?","web":"https://www.noordinarypath.com/post/how-to-get-mail","yt":"https://www.youtube.com/watch?v=j2IMn8mWTSo","keywords":"disqualify, IRS rules"},{"q":"What does duplicating expenses mean?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=zAIwVfLae28","keywords":"duplicate expenses, housing"},{"q":"Why didn\\u2019t I receive my full stipend this week?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"missing stipend, prorated"},{"q":"What are prorated stipends?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"prorated, partial week"},{"q":"What happens to my pay if I miss a shift?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"missed shift pay"},{"q":"What happens if I\\u2019m called off?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"call off pay"},{"q":"What are guaranteed hours?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"guaranteed hours"},{"q":"What is overtime for travel nurses?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"overtime rules"},{"q":"Why does my paycheck look different than expected?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"paycheck issue"},{"q":"Why did my pay change mid-contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"rate change"},{"q":"Can my pay change after I sign a contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"contract pay change"},{"q":"Why do travel nurse rates change so often?","web":"https://www.noordinarypath.com/post/recruiter-ai","yt":"https://www.youtube.com/watch?v=9Ts44GTkCh0","keywords":"rate fluctuation"},{"q":"Why does another agency say they can pay more?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=ejam6I9cqz4","keywords":"agency comparison"},{"q":"When do I get paid?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"pay schedule"},{"q":"What is the pay cycle?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"pay cycle timing"},{"q":"What happens if my timecard is late?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"late timecard"},{"q":"When do I get travel reimbursement?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"travel reimbursement timing"},{"q":"What does paid after successful completion mean?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"completion bonus"}],"Housing":[{"q":"What housing options do travel nurses have?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://www.youtube.com/watch?v=81OV0ZYXTvE","keywords":"housing options"},{"q":"What is agency-provided housing?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"agency housing"},{"q":"What is a housing stipend?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"housing stipend"},{"q":"Which is better, agency housing or stipend?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/zWCxTfmSz5w","keywords":"housing comparison"},{"q":"When should I start looking for housing?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"housing timing"},{"q":"What types of housing do travel nurses use?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"housing types"},{"q":"What is Furnished Finder?","web":"https://www.noordinarypath.com/post/great-housing-resources-and-websites","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"furnished finder"},{"q":"Can I keep leftover housing stipend money?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"save stipend"},{"q":"What happens if my housing costs more than my stipend?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"over budget housing"},{"q":"What should I look for when choosing housing?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://www.youtube.com/watch?v=81OV0ZYXTvE","keywords":"housing tips"},{"q":"How far should I live from the hospital?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"commute distance"},{"q":"What should I avoid when booking housing?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://www.youtube.com/watch?v=89xYokTiuVw","keywords":"housing scams"},{"q":"Do I need a lease?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"lease requirement"},{"q":"What if my assignment gets canceled and I have a lease?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"lease risk"},{"q":"Can I break a lease early?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"break lease"},{"q":"Can I share housing with another traveler?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"roommate"},{"q":"Can I stay in a hotel instead?","web":"https://www.noordinarypath.com/housing","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"hotel housing"},{"q":"Can I travel in an RV?","web":"https://www.noordinarypath.com/rv-living","yt":"https://www.youtube.com/watch?v=A68fDnPMycA","keywords":"rv travel"},{"q":"What utilities are usually included?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"utilities"},{"q":"Do I need renter\\u2019s insurance?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"renters insurance"},{"q":"What should I bring with me for housing?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"packing list"},{"q":"What if I arrive and the housing isn\\u2019t what I expected?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/yWLYu3b_qho","keywords":"housing issue"},{"q":"Is it better to book housing before or after arriving?","web":"https://www.noordinarypath.com/post/finding-your-home-away-from-home","yt":"https://youtu.be/3OSU1BYDdv4","keywords":"booking timing"}],"Contracts":[{"q":"What is a travel nurse contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"contract basics"},{"q":"Is my job guaranteed once I sign a contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=rZ-W9l8sun8","keywords":"job security"},{"q":"What does at-will employment mean?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"at will"},{"q":"What is included in a travel nurse contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"contract details"},{"q":"What parts of my contract can be negotiated?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ju5XFw6rWTs","keywords":"negotiation"},{"q":"Can I negotiate my pay?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ju5XFw6rWTs","keywords":"pay negotiation"},{"q":"Can I negotiate my schedule or shift?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"schedule negotiation"},{"q":"What is RTO (Requested Time Off)?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"RTO"},{"q":"Can I request time off after I start?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"time off request"},{"q":"What is floating in a contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"floating"},{"q":"What does like units mean?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"like units"},{"q":"What is a cancellation clause?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ju5XFw6rWTs","keywords":"cancellation clause"},{"q":"Can the facility cancel my contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ju5XFw6rWTs","keywords":"facility cancel"},{"q":"What happens if my contract is canceled?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"contract canceled"},{"q":"Can I cancel my contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"traveler cancel"},{"q":"What happens if I leave a contract early?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"early termination"},{"q":"Can contract terms change after I sign?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"amendment"},{"q":"What is a contract extension?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=lBgft6mbmsg","keywords":"extension"},{"q":"When are extensions discussed?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=lBgft6mbmsg","keywords":"extension timing"},{"q":"Can my pay change on an extension?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"extension pay"},{"q":"Can I extend for less than 13 weeks?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"short extension"},{"q":"Can I switch facilities but stay in the same area?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/iIVnceRLsVI","keywords":"switch facility"},{"q":"Should I keep a copy of my contract?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"keep contract"}],"Compliance":[{"q":"What is compliance in travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"compliance"},{"q":"Why is compliance required?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"why compliance"},{"q":"What compliance items are usually required?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"requirements"},{"q":"Why does compliance take so long?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"delay"},{"q":"How long does compliance usually take?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"timeline"},{"q":"Can my start date be delayed?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"start delay"},{"q":"What happens if I don\\u2019t complete compliance on time?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"miss deadline"},{"q":"Do I have to pay for compliance items?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"pay upfront"},{"q":"Will I be reimbursed for compliance costs?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"reimbursement"},{"q":"What is a background check?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"background check"},{"q":"What is a drug screen?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"drug test"},{"q":"What medical requirements are included in compliance?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"medical requirements"},{"q":"What are titers?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"titers"},{"q":"What certifications do I need?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"certifications"},{"q":"What is license verification?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"license verify"},{"q":"What is a compact license?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"compact license"},{"q":"How do I know if I\\u2019m eligible for a compact license?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"eligibility compact"},{"q":"What is PSOR (Primary State of Residence)?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"PSOR"},{"q":"Can I submit to jobs without a license in that state?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"license pending"},{"q":"How long does it take to get a new state license?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"license time"},{"q":"Can I start licensing before I have a job?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/0F_6t1nc4Vw","keywords":"start licensing"},{"q":"What happens after compliance is complete?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"after compliance"},{"q":"When do I get my first-day instructions?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/OE9taowv6tY","keywords":"first day info"},{"q":"What should I do to make compliance easier?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/10Z_idPaAe8","keywords":"tips"}],"Job Search":[{"q":"How does the travel nurse job search process work?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"job process"},{"q":"What does it mean to be submitted to a job?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"submission"},{"q":"What happens after I get submitted?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"after submission"},{"q":"How long does it take to hear back after submission?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"response time"},{"q":"Why am I not getting submitted?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/FFi9mw1MtSA","keywords":"not submitted"},{"q":"Why am I getting rejected?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/FFi9mw1MtSA","keywords":"rejection"},{"q":"How many jobs should I apply to at once?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"apply volume"},{"q":"Can I be submitted to multiple jobs at the same time?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"multiple submissions"},{"q":"Can I work with multiple agencies?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/XUBgh0M1S4U","keywords":"multiple agencies"},{"q":"What is a duplicate submission?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"duplicate"},{"q":"What does auto-offer mean?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"auto offer"},{"q":"What is a manager interview?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"interview"},{"q":"What questions should I ask in an interview?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"interview questions"},{"q":"How should I prepare for a travel nurse interview?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://www.youtube.com/watch?v=TjSqgefm_hM","keywords":"prep interview"},{"q":"How quickly can I get an offer?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/CdM8hW__dP4","keywords":"offer timing"},{"q":"How long do I have to accept an offer?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"accept window"},{"q":"Can I turn down an offer?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"decline offer"},{"q":"Can I accept multiple offers at once?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"multiple offers"},{"q":"What happens after I accept an offer?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"after accept"},{"q":"What if I change my mind after accepting an offer?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/A2w5mjHC_fU","keywords":"back out"},{"q":"Why do some jobs disappear so quickly?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/OE9taowv6tY","keywords":"job fills fast"},{"q":"What makes a strong travel nurse profile?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://www.youtube.com/watch?v=UyBDfNZtc5I","keywords":"strong profile"},{"q":"What role does my recruiter play in this process?","web":"https://www.noordinarypath.com/post/recruiter-ai","yt":"https://www.youtube.com/watch?v=ejam6I9cqz4","keywords":"recruiter role"},{"q":"How can I improve my chances of getting a job?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://www.youtube.com/watch?v=J4Qst_b8Gvs","keywords":"improve chances"}],"On The Job":[{"q":"What should I expect on my first day?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Z0v1vS1EqJs","keywords":"first day"},{"q":"How much orientation do travel nurses get?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Z0v1vS1EqJs","keywords":"orientation"},{"q":"Do I get paid for orientation?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Z0v1vS1EqJs","keywords":"orientation pay"},{"q":"What if orientation feels too short?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"short orientation"},{"q":"What are the expectations for travel nurses on the unit?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/mmkuh-g4TyY","keywords":"expectations"},{"q":"Will I have the same patient ratios as staff nurses?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/mmkuh-g4TyY","keywords":"ratios"},{"q":"Will I get the hardest assignments?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/mmkuh-g4TyY","keywords":"hard assignments"},{"q":"Can I be floated to other units?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=k7s-Qhtetvg","keywords":"floating"},{"q":"What if I\\u2019m uncomfortable floating?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=k7s-Qhtetvg","keywords":"floating concern"},{"q":"What if I\\u2019m asked to work outside my scope?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"scope"},{"q":"What if I feel unsafe at work?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"unsafe"},{"q":"What if patient safety is compromised?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"patient safety"},{"q":"Who do I contact if I have a problem on assignment?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://www.youtube.com/watch?v=-b43cxIMHKU","keywords":"support"},{"q":"What support does my recruiter provide during my assignment?","web":"https://www.noordinarypath.com/post/recruiter-ai","yt":"https://www.youtube.com/watch?v=-b43cxIMHKU","keywords":"recruiter support"},{"q":"What if I don\\u2019t get along with staff or management?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"conflict"},{"q":"What if the job is not what I expected?","web":"https://www.noordinarypath.com/facilityreviews","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"job mismatch"},{"q":"How quickly am I expected to adapt?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Z0v1vS1EqJs","keywords":"adapt quickly"},{"q":"What makes a traveler successful on assignment?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/mmkuh-g4TyY","keywords":"success"},{"q":"What behaviors can get a traveler canceled?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"canceled"},{"q":"Can I be canceled during my assignment?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"cancellation"},{"q":"How can I protect my license as a traveler?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/WR8FDvc1oWs","keywords":"protect license"},{"q":"What should I do if I\\u2019m struggling on assignment?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/yWLYu3b_qho","keywords":"struggling"},{"q":"Can I extend my contract if I like the assignment?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"extend"},{"q":"What if I don\\u2019t want to extend?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"decline extension"}],"Scheduling & Payroll":[{"q":"How are travel nurse schedules determined?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"schedule"},{"q":"Can I request specific days or block scheduling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"block scheduling"},{"q":"What is block scheduling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/Ju5XFw6rWTs","keywords":"block"},{"q":"What happens if I get called off?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"call off"},{"q":"What is low census?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"low census"},{"q":"Who gets called off first?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"call off priority"},{"q":"What is on-call?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=UCnPiJ9Y9ug","keywords":"on call"},{"q":"What is callback pay?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"callback"},{"q":"Why didn\\u2019t I receive callback pay?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"callback issue"},{"q":"Can I pick up extra shifts?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"extra shifts"},{"q":"How does overtime work?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"overtime"},{"q":"Do travel nurses get PTO?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"PTO"},{"q":"Can I call in sick?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"sick"},{"q":"How much time off is too much?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"attendance"},{"q":"Can I make up missed shifts?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"make up"},{"q":"When do I get paid?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"pay timing"},{"q":"What is a timecard?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"timecard"},{"q":"When are timecards due?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"timecard due"},{"q":"What if I forget to clock in or out?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"clock issue"},{"q":"Why is my paycheck lower than expected?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"low paycheck"},{"q":"What deductions come out of my paycheck?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/G0tTs3ksd_s","keywords":"deductions"},{"q":"When do I receive bonuses or reimbursements?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/3rwmdAUs86U","keywords":"bonuses"},{"q":"What does paid after completion mean?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"completion"}],"Benefits":[{"q":"Do travel nurses get benefits?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"benefits"},{"q":"When do benefits start?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"start benefits"},{"q":"Why don\\u2019t benefits start immediately with every agency?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"delay"},{"q":"What happens to my benefits between assignments?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"gap"},{"q":"What is a break in service?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"break"},{"q":"What is COBRA?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"cobra"},{"q":"Can I decline agency benefits?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"decline"},{"q":"Do travel nurses get 401(k) benefits?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"401k"},{"q":"Do travel nurses get sick pay?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"sick pay"},{"q":"Can I cover my family under my insurance?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"family coverage"},{"q":"What types of health insurance plans are offered?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"plans"},{"q":"What is a deductible?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"deductible"},{"q":"What is a premium?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"premium"},{"q":"What is out-of-pocket maximum?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"oop max"},{"q":"Can I use my insurance in different states?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"multi state"},{"q":"What if I get injured at work?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"injury"},{"q":"Do I need to report minor injuries?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"report"},{"q":"What happens if I get injured and can\\u2019t work?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"workers comp"},{"q":"When can I be drug tested?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"drug test"},{"q":"What happens if I fail or refuse a drug test?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"fail test"},{"q":"Do travel nurses get life insurance?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"life insurance"},{"q":"Should I get my own insurance instead?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/8eGRjWQWRvs","keywords":"private insurance"},{"q":"What financial protections should I have as a traveler?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"financial"}],"Lifestyle":[{"q":"What happens between travel nurse assignments?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/UxVyd-R3SbE","keywords":"between assignments"},{"q":"How much time should I take between assignments?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/UxVyd-R3SbE","keywords":"time off"},{"q":"Can I take extended time off from travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/AWhrtRhc6go","keywords":"extended break"},{"q":"How do I plan my next assignment?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"planning"},{"q":"When should I start looking for my next job?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/6oWO-6hNGa8","keywords":"timing"},{"q":"What if I don\\u2019t want to continue traveling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/AWhrtRhc6go","keywords":"stop traveling"},{"q":"Can I take a permanent job after traveling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/AWhrtRhc6go","keywords":"staff job"},{"q":"Can I travel long-term as a career?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"long term"},{"q":"How do I stay organized as a travel nurse?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/yWLYu3b_qho","keywords":"organization"},{"q":"How do I manage finances as a travel nurse?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"finance"},{"q":"Should I save money from stipends?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"save"},{"q":"What are the biggest financial mistakes travelers make?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/ggVkSBNsPNc","keywords":"mistakes"},{"q":"How do I avoid burnout as a travel nurse?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=UxVyd-R3SbE","keywords":"burnout"},{"q":"How do I choose the right assignments for me?","web":"https://www.noordinarypath.com/travelnursejobs","yt":"https://youtu.be/PH4ac-F1pwQ","keywords":"choose job"},{"q":"What lifestyle changes should I expect as a traveler?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=NPvHr4z3UmY","keywords":"changes"},{"q":"How do I build relationships while traveling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/yN43M00qkVE","keywords":"relationships"},{"q":"Can I build a community while traveling?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/yN43M00qkVE","keywords":"community"},{"q":"How do I maintain work-life balance?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=UxVyd-R3SbE","keywords":"balance"},{"q":"What are the biggest lifestyle challenges in travel nursing?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=Ssud95HhnMc","keywords":"challenges"},{"q":"What are the biggest lifestyle benefits?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://www.youtube.com/watch?v=UxVyd-R3SbE","keywords":"benefits"},{"q":"How do I know if travel nursing is right for me long-term?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"fit"},{"q":"What is the best advice for new travel nurses?","web":"https://www.noordinarypath.com/travel-nursing","yt":"https://youtu.be/GhKik3_dHW8","keywords":"advice"}]}');
+  var activeCategory = Object.keys(QA_DATA)[0];
+
+  function buildTabs() {
+    var tabs = document.getElementById('catTabs');
+    Object.keys(QA_DATA).forEach(function(cat) {
+      var btn = document.createElement('button');
+      btn.className = 'cat-tab' + (cat === activeCategory ? ' active' : '');
+      btn.textContent = cat;
+      btn.setAttribute('data-cat', cat);
+      btn.onclick = function() { selectCategory(cat); };
+      tabs.appendChild(btn);
+    });
+  }
+
+  function selectCategory(cat) {
+    activeCategory = cat;
+    document.querySelectorAll('.cat-tab').forEach(function(t) {
+      t.classList.toggle('active', t.getAttribute('data-cat') === cat);
+    });
+    renderQuestions();
+  }
+
+  function renderQuestions() {
+    var grid = document.getElementById('qGrid');
+    grid.innerHTML = '';
+    var qs = QA_DATA[activeCategory] || [];
+    document.getElementById('qCount').textContent = qs.length + ' Questions';
+    qs.forEach(function(item) {
+      var card = document.createElement('div');
+      card.className = 'q-card';
+      card.innerHTML = '<div class="q-dot"></div><div class="q-text">' + item.q + '</div>';
+      card.onclick = function() { askQuestion(item.q, item); };
+      grid.appendChild(card);
+    });
+  }
+
+  function allQuestions() {
+    var all = [];
+    Object.values(QA_DATA).forEach(function(arr) { arr.forEach(function(i) { all.push(i); }); });
+    return all;
+  }
+
+  function findRelated(questionText, currentQ, limit) {
+    limit = limit || 4;
+    var words = questionText.toLowerCase().split(/\s+/).filter(function(w){ return w.length > 3; });
+    var results = [];
+    allQuestions().forEach(function(item) {
+      if (item.q === currentQ) return;
+      var score = words.reduce(function(acc, w){ return acc + (item.q.toLowerCase().indexOf(w) >= 0 ? 1 : 0); }, 0);
+      if (score > 0) results.push({ item: item, score: score });
+    });
+    results.sort(function(a,b){ return b.score - a.score; });
+    return results.slice(0, limit).map(function(r){ return r.item; });
+  }
+
+  function findBestMatches(query, limit) {
+    limit = limit || 3;
+    var words = query.toLowerCase().split(/\s+/).filter(function(w){ return w.length > 2; });
+    var results = [];
+    allQuestions().forEach(function(item) {
+      var haystack = (item.q + ' ' + item.keywords).toLowerCase();
+      var score = words.reduce(function(acc, w){ return acc + (haystack.indexOf(w) >= 0 ? 1 : 0); }, 0);
+      if (score > 0) results.push({ item: item, score: score });
+    });
+    results.sort(function(a,b){ return b.score - a.score; });
+    return results.slice(0, limit).map(function(r){ return r.item; });
+  }
+
+  function makeResourceLinks(topMatch) {
+    var el = document.getElementById('resourceLinks');
+    el.innerHTML = '';
+    if (!topMatch) return;
+    if (topMatch.web) {
+      var a = document.createElement('a');
+      a.className = 'resource-btn web'; a.href = topMatch.web; a.target = '_blank';
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg> Learn More';
+      el.appendChild(a);
+    }
+    if (topMatch.yt) {
+      var b = document.createElement('a');
+      b.className = 'resource-btn yt'; b.href = topMatch.yt; b.target = '_blank';
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg> Watch the Video';
+      el.appendChild(b);
+    }
+  }
+
+  function makeRelated(questionText) {
+    var related = findRelated(questionText, questionText, 4);
+    var block = document.getElementById('relatedBlock');
+    var pills = document.getElementById('relatedPills');
+    if (related.length === 0) { block.style.display = 'none'; return; }
+    block.style.display = 'block';
+    pills.innerHTML = '';
+    related.forEach(function(item) {
+      var pill = document.createElement('span');
+      pill.className = 'related-pill';
+      pill.textContent = item.q;
+      pill.onclick = function() { askQuestion(item.q, item); };
+      pills.appendChild(pill);
+    });
+  }
+
+  function askQuestion(questionText, itemData) {
+    var panel = document.getElementById('answerPanel');
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('answerQuestion').textContent = questionText;
+    var answerEl = document.getElementById('answerText');
+    answerEl.className = 'answer-text loading';
+    answerEl.innerHTML = '<div class="loading-row"><div class="spinner"></div> Getting your answer...</div>';
+    document.getElementById('resourceLinks').innerHTML = '';
+    document.getElementById('relatedBlock').style.display = 'none';
+
+    var matches = itemData
+      ? [itemData].concat(findBestMatches(questionText, 2).filter(function(m){ return m.q !== questionText; }))
+      : findBestMatches(questionText, 3);
+    var topMatch = matches[0] || null;
+    var contextQs = matches.map(function(m){ return 'Q: ' + m.q; }).join('\n');
+
+    fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: questionText, context: contextQs })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      answerEl.className = 'answer-text';
+      answerEl.textContent = data.answer || "Check out Kristin\'s resources below for a detailed answer!";
+      makeResourceLinks(topMatch);
+      makeRelated(questionText);
+    })
+    .catch(function() {
+      answerEl.className = 'answer-text';
+      answerEl.textContent = "Couldn\'t load an AI answer right now, but Kristin\'s resources below have you covered!";
+      makeResourceLinks(topMatch);
+      makeRelated(questionText);
+    });
+  }
+
+  window.quickAsk = function(q) {
+    document.getElementById('searchInput').value = q;
+    askQuestion(q, findBestMatches(q, 1)[0] || null);
+  };
+
+  document.getElementById('searchBtn').onclick = function() {
+    var q = document.getElementById('searchInput').value.trim();
+    if (!q) return;
+    askQuestion(q, findBestMatches(q, 1)[0] || null);
+  };
+
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    var q = this.value.trim();
+    if (!q) return;
+    askQuestion(q, findBestMatches(q, 1)[0] || null);
+  });
+
+  buildTabs();
+  renderQuestions();
+})();
+</script>
+</body>
+</html>
