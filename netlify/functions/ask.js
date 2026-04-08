@@ -33,3 +33,44 @@ exports.handler = function(event, context, callback) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'Content-Length': Buffer.byteLength(payload)
+    }
+  };
+
+  var req = https.request(options, function(res) {
+    var data = '';
+    res.on('data', function(chunk) { data += chunk; });
+    res.on('end', function() {
+      try {
+        var result = JSON.parse(data);
+        var answer = (result.content && result.content[0] && result.content[0].text)
+          ? result.content[0].text
+          : "Check out Kristin's resources below!";
+        callback(null, {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({ answer: answer })
+        });
+      } catch(e) {
+        callback(null, {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({ answer: "Check out Kristin's resources below!" })
+        });
+      }
+    });
+  });
+
+  req.on('error', function() {
+    callback(null, {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({ answer: "Check out Kristin's resources below!" })
+    });
+  });
+
+  req.write(payload);
+  req.end();
+};
