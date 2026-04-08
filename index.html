@@ -467,7 +467,7 @@
     var topMatch = matches[0] || null;
     var contextQs = matches.map(function(m){ return 'Q: ' + m.q; }).join('\n');
 
-    fetch('/api/ask', {
+    fetch('https://nopwebsiteqa.netlify.app/.netlify/functions/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText, context: contextQs })
