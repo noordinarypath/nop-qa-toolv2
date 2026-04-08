@@ -1,23 +1,33 @@
-exports.handler = async function(event, context) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Content-Type': 'application/json'
-  };
+const https = require('https');
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS, GET'
+};
+
+exports.handler = async function(event) {
+  // Always return CORS headers, even on OPTIONS
   if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 204, headers, body: '' };
+    return {
+      statusCode: 204,
+      headers: CORS_HEADERS,
+      body: ''
+    };
   }
 
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+    return {
+      statusCode: 405,
+      headers: CORS_HEADERS,
+      body: 'Method not allowed'
+    };
   }
 
   try {
-    const { question, context: ctx } = JSON.parse(event.body);
-
-    const https = require('https');
+    const body = JSON.parse(event.body);
+    const question = body.question || '';
+    const ctx = body.context || '';
 
     const payload = JSON.stringify({
       model: 'claude-sonnet-4-20250514',
@@ -26,9 +36,7 @@ exports.handler = async function(event, context) {
       messages: [{ role: 'user', content: question }]
     });
 
-    const answer = await new Promise((resolve, reject) => {
-      const req = https.request({
-        hostname: 'api.anthropic.com',
-        path: '/v1/messages',
-        method: 'POST',
-        head
+    const answer = await new Promise((resolve) => {
+      const req = https.request(
+        {
+          hostname: 'api.an
