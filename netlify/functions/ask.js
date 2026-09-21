@@ -21,7 +21,7 @@ exports.handler = function(event, context, callback) {
   var ctx = parsed.context || '';
 
   var payload = JSON.stringify({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1000,
     system: 'You are a knowledgeable travel nursing assistant for No Ordinary Path, run by Kristin Farnsworth, a travel nurse recruiter at Atlas MedStaff and former travel nurse family. Answer questions in a warm, direct, practical voice. Plain conversational paragraphs only, no bullet points or headers. 3-5 sentences max. Never mention competitor agencies. Context: ' + ctx,
     messages: [{ role: 'user', content: question }]
